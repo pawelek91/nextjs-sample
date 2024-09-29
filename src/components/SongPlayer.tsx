@@ -1,17 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import FullScreenLoader from './FullScreenLoader';
-
-import dynamic from 'next/dynamic';
-const Spotify = dynamic(() => import('./Players/Spotify'), {
-	loading: () => <FullScreenLoader />,
-});
 
 
 import fetchSong from '@/app/actions/fetchSong';
-import useSWR from 'swr';
-import { I_SongItem } from '@/interfaces/contentful.interfaces';
+import { I_SongDetails, I_SongItem } from '@/types/backend.interfaces';
+import Spotify from './Players/Spotify';
 
 interface Props {
 	songData: I_SongItem;
@@ -21,7 +16,18 @@ interface Props {
 
 export default function SongPlayer(props: Props) {
 	const { songData, show, setShow } = props;
-	const { data: song, error, isLoading } = useSWR(songData.slug, fetchSong);
+	const [song, setSong] = useState<I_SongDetails | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
+
+	useEffect(() => {
+		if (show) {
+			setIsLoading(true);
+			fetchSong(songData.slug).then((song) => {
+				setSong(song);
+				setIsLoading(false);
+			});
+		}
+	}, [show]);
 
 	if (isLoading) {
 		return <FullScreenLoader />;
@@ -29,11 +35,7 @@ export default function SongPlayer(props: Props) {
 
 	if (!song) return <div className="m-auto text-error">Failed to load song</div>;
 
-	// if (song.spotifyUrl) {
-	// 	return <Spotify show={show} url={song.spotifyUrl} setShow={setShow} />;
-	// } else {
-	// 	return <SoundCloud show={show} url={song.soundCloudUrl} setShow={setShow} />;
-	// }
+	
 	return <Spotify show={show} song={song} setShow={setShow} />;
 
 	

@@ -1,12 +1,5 @@
 import React from 'react';
-import BoxLoader from '@/components/BoxLoader';
-
-import dynamic from 'next/dynamic';
-import SongListLoader from '@/components/SongListLoader';
-const ClientExampleView = dynamic(() => import('./ClientExampleView'), {
-	loading: () => <SongListLoader />,
-	ssr: false,
-});
+import ClientExampleView from './ClientExampleView';
 
 export default function ClientExamplePage() {
 	return (

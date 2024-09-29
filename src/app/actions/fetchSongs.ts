@@ -2,7 +2,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { I_SongItem } from '@/interfaces/contentful.interfaces';
+import { I_SongItem } from '@/types/backend.interfaces';
 
 export default async function fetchSongs(): Promise<I_SongItem[]> {
 	try {

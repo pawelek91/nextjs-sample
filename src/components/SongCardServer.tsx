@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { I_SongItem } from '@/interfaces/contentful.interfaces';
+import { I_SongItem } from '@/types/backend.interfaces';
 import SongPlayButton from './SongPlayButton';
 
 const SongCardServer = (props: { song: I_SongItem }) => {

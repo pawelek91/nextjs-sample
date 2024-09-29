@@ -1,26 +1,28 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from '@/components/Link';
-import BoxLoader from '@/components/BoxLoader';
 import SongCard from '@/components/SongCard';
 
-import useSwr from 'swr';
 import fetchSongs from '@/app/actions/fetchSongs';
 
 import { LuRefreshCcw } from 'react-icons/lu';
-import SongListLoader from '@/components/SongListLoader';
+import { I_SongItem } from '@/types/backend.interfaces'; // Import the I_SongItem type
 
 export default function ClientExampleView() {
-	const { data: songs, isLoading, isValidating, mutate } = useSwr('songs', fetchSongs);
+	const [songs, setSongs] = useState<I_SongItem[] | null>(null);
+	const [isValidating, setIsValidating] = useState(false);
 
-	if (isLoading) {
-		return <SongListLoader />;
-	}
+	const refreshData = async () => {
+		setIsValidating(true);
+		const songs = await fetchSongs();
+		setSongs(songs);
+		setIsValidating(false);
+	};
 
-	if (!songs) {
-		return <div className="m-auto text-error">Failed to load songs</div>;
-	}
+	useEffect(() => {
+		refreshData();
+	}, []);
 
 	return (
 		<>
@@ -28,17 +30,17 @@ export default function ClientExampleView() {
 				<Link className="btn btn-primary" href="/">
 					Go Back
 				</Link>
-				<button className="btn btn-secondary" onClick={() => mutate()}>
+				<button className="btn btn-secondary" onClick={() => refreshData()}>
 					<div className="w-6 flex items-center justify-center">
 						{isValidating ? <div className="loading loading-ring"></div> : <LuRefreshCcw />}
 					</div>
 					Refresh
 				</button>
 			</div>
-			
-				{songs.map((song, i) => (
-					<SongCard key={i} song={song} />
-				))}
+
+			{songs && songs.map((song, i) => (
+				<SongCard key={i} song={song} />
+			))}
 		</>
 	);
 }

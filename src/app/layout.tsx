@@ -16,7 +16,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 		<html lang="en">
 			<body className={inter.className}>
 				<div className="flex flex-col min-h-screen bg-base-300 text-base-content">
-					{/* <Header /> */}
 					{children}
 				</div>
 				<Next13NProgress color="#29D" />

@@ -5,7 +5,7 @@ import SongPlayer from './SongPlayer';
 
 import { FaPlay } from 'react-icons/fa';
 
-import { I_SongItem } from '@/interfaces/contentful.interfaces';
+import { I_SongItem } from '@/types/backend.interfaces';
 
 const SongCard = (props: { song: I_SongItem }) => {
 	const { song } = props;

@@ -1,6 +1,6 @@
 import React from 'react';
 import ModalRoot from '@/components/modals/ModalRoot';
-import { I_SongDetails } from '@/interfaces/contentful.interfaces';
+import { I_SongDetails } from '@/types/backend.interfaces';
 
 interface Props {
 	song: I_SongDetails;

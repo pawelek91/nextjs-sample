@@ -1,6 +1,6 @@
 'use server';
 
-import { I_SongDetails } from '@/interfaces/contentful.interfaces';
+import { I_SongDetails } from '@/types/backend.interfaces';
 import { v4 as uuidv4 } from 'uuid';
 
 export default async function fetchSong(slug: string) {
