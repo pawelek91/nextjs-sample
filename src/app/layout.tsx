@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<div className="flex flex-col min-h-screen bg-base-300 text-base-content">
+				<div className="flex flex-col min-h-screen text-base-content">
 					{children}
 				</div>
 				<Next13NProgress color="#29D" />
