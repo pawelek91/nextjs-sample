@@ -1,0 +1,1 @@
+## Demo Next.js Application for Learning server side and client side data fetching
