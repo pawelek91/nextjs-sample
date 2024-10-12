@@ -1,42 +1,51 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, { Suspense } from 'react';
 import FullScreenLoader from './FullScreenLoader';
-
-
 import fetchSong from '@/app/actions/fetchSong';
 import { I_SongDetails, I_SongItem } from '@/types/backend.interfaces';
-import Spotify from './Players/Spotify';
+
+// Lazy loading of Spotify component
+const Spotify = React.lazy(() => import('./Players/Spotify'));
 
 interface Props {
-	songData: I_SongItem;
-	show: boolean;
-	setShow: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
+    songData: I_SongItem;
+    show: boolean;
+    setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function SongPlayer(props: Props) {
-	const { songData, show, setShow } = props;
-	const [song, setSong] = useState<I_SongDetails | null>(null);
-	const [isLoading, setIsLoading] = useState(false);
+// Function to fetch song data
+const fetchSongData = async (slug: string) => {
+    const song = await fetchSong(slug);
+    return song;
+};
 
-	useEffect(() => {
-		if (show) {
-			setIsLoading(true);
-			fetchSong(songData.slug).then((song) => {
-				setSong(song);
-				setIsLoading(false);
-			});
-		}
-	}, [show]);
+export default function SongPlayer({ songData, show, setShow }: Props) {
+    const [song, setSong] = React.useState<I_SongDetails | null>(null);
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [error, setError] = React.useState<string | null>(null);
 
-	if (isLoading) {
-		return <FullScreenLoader />;
-	}
+    React.useEffect(() => {
+        if (show) {
+            setIsLoading(true);
+            fetchSongData(songData.slug)
+                .then(setSong)
+                .catch(() => setError('Failed to load song'))
+                .finally(() => setIsLoading(false));
+        }
+    }, [show, songData.slug]);
 
-	if (!song) return <div className="m-auto text-error">Failed to load song</div>;
+    //if (isLoading) return <FullScreenLoader />;
+    if (error) return <div className="m-auto text-error">{error}</div>;
+    
+    // Use Suspense to wrap Spotify
+    return (
+        // <Suspense fallback={<FullScreenLoader />}>
+        //     {song && <Spotify show={show} song={song} setShow={setShow} />}
+        // </Suspense>
 
-	
-	return <Spotify show={show} song={song} setShow={setShow} />;
-
-	
+<Suspense fallback="loading">
+{song && <Spotify show={show} song={song} setShow={setShow} />}
+</Suspense>
+    );
 }
